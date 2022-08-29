@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block header %}
+{% block title %}Sign in{% endblock title %}
+{% endblock header %}
+
+{% block content %}
+<form method="post" action={{ url_for('login') }}>
+    <div class="mb-3">
+        {{ form.username.label }}:
+        {{ form.username(class="form-control")}}
+    </div>
+    <div class="mb-3">
+        {{ form.password.label }}:
+        {{ form.password(class="form-control")}}
+    </div>
+    <div class="mb-3">
+        <button type="submit" class="btn btn-primary">Sign in</button>
+    </div>
+    <div class="mb-3">
+        Need an account?
+        <a href={{ url_for('register') }}>Register</a>
+    </div>
+</form>
+{% endblock content %}

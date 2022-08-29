@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block header %}
+    {% block title %}
+        Server List
+    {% endblock title %}
+{% endblock header %}
+{% set i = 5 %}
+{% block content %}
+    <table class="table table-hover table-striped">
+        <thead>
+            <th scope="col">#</th>
+            <th scope="col">Game</th>
+            <th scope="col">Name</th>
+            <th scope="col">IP</th>
+        </thead>
+        <tbody>
+            {% for server in serverlist %}
+                <tr>
+                    <th scope="row">{{ loop.index }}</th>
+                    <td>{{ server["game"] }}</td>
+                    <td>{{ server["name"] }}</td>
+                    <td>{{ server["ip"] }}</td>
+                </tr>
+            {% endfor %}
+            <tr>
+                <th scope="row"></th>
+                <td colspan="4">
+                    <a href={{ url_for('server_add') }}>Add Server</a>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+{% endblock content %}
