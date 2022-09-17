@@ -5,7 +5,7 @@
 {% endblock header %}
 
 {% block content %}
-<form method="post" action={{ url_for('profile') }}>
+<form method="post" action={{ url_for('profile') }} enctype="multipart/form-data">
     <div class="mb-3">
         {{ form.email.label }}:
         {{ form.email(class="form-control")}}
@@ -13,6 +13,10 @@
     <div class="mb-3">
         {{ form.display_name.label }}:
         {{ form.display_name(class="form-control")}}
+    </div>
+    <div class="mb-3">
+        {{ form.picture.label }}:
+        {{ form.picture(class="form-control")}}
     </div>
     <div class="mb-3">
         <button type="submit" class="btn btn-primary">Submit</button>

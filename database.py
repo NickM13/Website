@@ -1,13 +1,20 @@
+from sys import stderr
 import mysql.connector
 import os
 
-config = {
-    'user': os.getenv("dbuser"),
-    'password': os.getenv("dbpasswd"),
-    'host': '127.0.0.1',
-    'database': 'website',
-    'raise_on_warnings': True
-}
+
+config = {}
+
+def init():
+    global config
+
+    config = {
+        'user': os.environ.get("DBUSER"),
+        'password': os.environ.get("DBPASS"),
+        'host': '127.0.0.1',
+        'database': 'website',
+        'raise_on_warnings': True
+    }
 
 
 def execute(query, args=()):
@@ -19,6 +26,7 @@ def execute(query, args=()):
 
 
 def query(query, args=(), one=False):
+    print(config['user'], file=stderr)
     with mysql.connector.connect(**config) as cnx:
         cursor = cnx.cursor()
         cursor.execute(query, args)

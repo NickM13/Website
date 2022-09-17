@@ -4,10 +4,6 @@ import sys
 import logging
 
 
-logging.basicConfig(level=logging.DEBUG,
-                    filename="/var/www/FlaskApp/FlaskApp/logs/latest.log",
-                    format='%(asctime)s %(message)s')
-
 sys.path.insert(0, "/var/www/FlaskApp/FlaskApp/")
 #sys.path.insert(0, "/var/www/FlaskApp/FlaskApp/venv/lib/python3.8/site-packages")
 

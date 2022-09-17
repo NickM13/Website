@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% block header %}
+    {% block title %}
+        Server Info {{ server.name }}
+    {% endblock title %}
+{% endblock header %}
+{% block content %}
+{{ server.description }}
+{% endblock content %}

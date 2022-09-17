@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block title %}
+    {{ user.display_name }} ({{ user.username }})
+{% endblock title %}
+{% block header %}
+{% endblock header %}
+{% block content %}
+
+<div align=center>
+<img src="{{ url_for('static', filename=current_user.get_picture()) }}" class="rounded-circle"
+height="120" width="120" alt="CartoonPortrait of a Guinea Pig" loading="lazy" />
+
+<h1 class="mt-3 display-6">{{ user.display_name }}</h1>
+<h5>{{ user.username }} {{ user.discord }}</h5>
+<a href="https://www.discordapp.com/users/{{ user.discord }}">{{ user.discord }}</a>
+<p />
+{% for server in user.get_owned_servers() %}
+{{ server.name }}
+{% endfor %}
+</div>
+{% endblock content %}

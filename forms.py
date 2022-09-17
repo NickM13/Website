@@ -1,4 +1,4 @@
-from wtforms import Form, StringField, PasswordField, validators
+from wtforms import Form, StringField, PasswordField, validators, FileField, TextAreaField
 import user
 import flask
 
@@ -8,6 +8,7 @@ class ProfileForm(Form):
         min=1, max=40)])
     email = StringField('Email', [validators.Length(
         min=6, max=40)])
+    picture = FileField('Profile Picture')
 
     def validate_on_submit(self):
         return self.validate
@@ -17,8 +18,7 @@ class AddServerForm(Form):
     game = StringField('Game', [validators.Length(min=1, max=40)])
     name = StringField('Name', [validators.Length(min=1, max=40)])
     ip = StringField('IP Address', [validators.Length(min=1, max=40)])
-    description = StringField('Description')
-    modinfo = StringField('Mod Info', [validators.Length(max=255)])
+    description = TextAreaField('Description')
 
     def validate_on_submit(self):
         return self.validate
@@ -41,8 +41,12 @@ class RegistrationForm(Form):
             flask.flash("Failed to validate")
             success = False
 
+        if not user.allowed_email(self.email.data):
+            flask.flash("Email is not valid")
+            success = False
+
         if user.get_by_username(self.username.data) is not None:
-            flask.flash("Username already taken!")
+            flask.flash("Username already taken")
             success = False
 
         return success
