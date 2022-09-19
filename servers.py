@@ -1,5 +1,6 @@
 import database
 from datetime import datetime
+from user import get_by_username
 
 
 dateFormat = ''
@@ -11,6 +12,7 @@ class Server:
         self.name = name
         self.ip = ip
         self.owner = owner
+        self.owner_user = get_by_username(owner)
         self.description = description
         self.created = created
         self.createdTime = datetime.strptime(created, '%Y-%m-%d %H:%M:%S').strftime('%d %b, %Y')

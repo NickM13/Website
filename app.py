@@ -161,6 +161,8 @@ def profile():
                 full_path = os.path.join(path, filename)
                 request.files['picture'].save(full_path)
                 picture = os.path.join(rel_path, filename)
+                flash(full_path)
+                flash(picture)
         
         res = update_profile(
             user=curr_user,
@@ -182,6 +184,7 @@ def profile():
     else:
         form.display_name.data = curr_user.display_name
         form.email.data = curr_user.email
+        form.discord.data = curr_user.discord
         form.picture.data = curr_user.picture
 
     return render_template('profile.html', form=form)
@@ -202,7 +205,6 @@ def logout():
 
 
 @app.route("/test")
-@login_required
 def test():
     return render_template('test.html')
 

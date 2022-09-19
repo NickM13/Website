@@ -55,7 +55,7 @@ def allowed_email(email: str):
 
 
 def update_profile(user: User, display_name: str, email: str, discord: str, picture: str):
-    if user.email == email and user.display_name == display_name and picture == None:
+    if user.email == email and user.display_name == display_name and picture == None and user.discord == discord:
         return 0
 
     user.display_name = display_name

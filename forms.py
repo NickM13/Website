@@ -8,10 +8,21 @@ class ProfileForm(Form):
         min=1, max=40)])
     email = StringField('Email', [validators.Length(
         min=6, max=40)])
+    discord = StringField('Discord', [validators.Length(
+        min=0, max=28)])
     picture = FileField('Profile Picture')
 
     def validate_on_submit(self):
-        return self.validate
+        success = True
+        if not self.validate():
+            flask.flash("Failed to validate")
+            success = False
+
+        if len(self.discord.data) > 0 and not user.allowed_discord(self.discord.data):
+            flask.flash("Discord is not valid")
+            success = False
+
+        return success
 
 
 class AddServerForm(Form):
@@ -47,6 +58,10 @@ class RegistrationForm(Form):
 
         if user.get_by_username(self.username.data) is not None:
             flask.flash("Username already taken")
+            success = False
+
+        if not user.allowed_discord(self.discord.data):
+            flask.flash("Discord is not valid")
             success = False
 
         return success
