@@ -35,6 +35,18 @@ class AddServerForm(Form):
         return self.validate
 
 
+class EditServerForm(Form):
+    id = StringField('ID', render_kw={'readonly': True})
+    owner = StringField('Owner', render_kw={'readonly': True})
+    game = StringField('Game', [validators.Length(min=1, max=40)])
+    name = StringField('Name', [validators.Length(min=1, max=40)])
+    ip = StringField('IP Address', [validators.Length(min=1, max=40)])
+    description = TextAreaField('Description')
+
+    def validate_on_submit(self):
+        return self.validate
+
+
 class RegistrationForm(Form):
     email = StringField('Email', [validators.Length(min=6, max=40)])
     username = StringField('Username', [validators.Length(min=4, max=25)])

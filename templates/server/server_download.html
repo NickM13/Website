@@ -10,9 +10,9 @@
     </div>
     <table class="table table-light table-hover table-striped table-condensed">
         <thead>
-            <th scope="col">#</th>
-            <th scope="col">Game</th>
+            <!--th scope="col">#</th-->
             <th scope="col">Name</th>
+            <th scope="col">Game</th>
             <th scope="col">Owner</th>
             <th scope="col">IP</th>
             <th scope="col">Created</th>
@@ -20,9 +20,9 @@
         <tbody>
             {% for server in serverlist %}
                 <tr>
-                    <th scope="row">{{ loop.index }}</th>
-                    <td>{{ server.game }}</td>
+                    <!--th scope="row">{{ loop.index }}</th-->
                     <td><a href={{ url_for('server_info', server=server.name) }}>{{ server.name }}</a></td>
+                    <td>{{ server.game }}</td>
                     <td><a href={{ url_for('user_info', user=server.owner_user.username) }}>{{ server.owner_user.display_name }}</a></td>
                     <td>{{ server.ip }}</td>
                     <td>{{ server.createdTime }}</td>

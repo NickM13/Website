@@ -14,7 +14,7 @@ from werkzeug.utils import secure_filename
 
 import database
 import servers
-from forms import AddServerForm, LoginForm, ProfileForm, RegistrationForm
+from forms import AddServerForm, EditServerForm, LoginForm, ProfileForm, RegistrationForm
 from user import get_by_username, register_new_user, update_profile
 
 load_dotenv("/var/www/FlaskApp/FlaskApp/.env")
@@ -75,7 +75,8 @@ def upload_file():
             return redirect(request.url)
         if file and allowed_file(file.filename):
             filename = secure_filename(file.filename)
-            file.save(os.path.join(app.config["UPLOAD_IMAGE_FOLDER"], filename))
+            file.save(os.path.join(
+                app.config["UPLOAD_IMAGE_FOLDER"], filename))
             return redirect(url_for("uploaded_file", filename=filename))
     return '''
     <!doctype html>
@@ -90,38 +91,38 @@ def upload_file():
 
 @app.route("/")
 def index():
-    return render_template("home.html")
+    return render_template("user/home.html")
 
 
 @app.route("/dashboard")
 def dashboard():
-    return render_template("dashboard.html")
+    return render_template("user/dashboard.html")
 
 
 @app.route("/notfound")
 def not_found():
-    return render_template("notfound.html")
+    return render_template("common/not_found.html")
 
 
 @app.route("/logs")
 def logs():
-    return render_template("log.html")
+    return render_template("common/log.html")
 
 
 @app.route('/log')
 def progress_log():
-	def generate():
-		for line in Pygtail(LOG_FILE, every_n=1):
-			yield "data:" + str(line) + "\n\n"
-			time.sleep(0.01)
-	return Response(generate(), mimetype= 'text/event-stream')
+    def generate():
+        for line in Pygtail(LOG_FILE, every_n=1):
+            yield "data:" + str(line) + "\n\n"
+            time.sleep(0.01)
+    return Response(generate(), mimetype='text/event-stream')
 
 
 @app.route("/servers")
 def server_list():
     serverlist = servers.get_all_servers()
 
-    return render_template("servers.html", serverlist=serverlist)
+    return render_template("server/servers.html", serverlist=serverlist)
 
 
 @app.route("/server/info")
@@ -129,18 +130,25 @@ def server_info():
     server = request.args.get("server")
     if server is None:
         return not_found()
-    return render_template("server_info.html", server=servers.get_server(server))
+    return render_template("server/server_info.html", server=servers.get_server(server))
 
 
 @app.route("/user/<user>")
 def user_info(user: str):
-    return render_template("user_info.html", user=get_by_username(user))
+    return render_template("user/user_info.html", user=get_by_username(user))
 
 
 @app.route("/settings")
 @login_required
 def settings():
-    return render_template("settings.html")
+    return render_template("user/settings.html")
+
+
+@app.route("/follow_user", methods=['POST', 'GET'])
+@login_required
+def follow_user():
+    data = request.get_json()
+    return (data[0]['User'])
 
 
 @app.route("/profile", methods=["GET", "POST"])
@@ -157,13 +165,13 @@ def profile():
             if allowed_file(filename):
                 rel_path = os.path.join("images")
                 path = os.path.join(app.config['UPLOAD_FOLDER'], rel_path)
-                os.makedirs(path, exist_ok = True)
+                os.makedirs(path, exist_ok=True)
                 full_path = os.path.join(path, filename)
                 request.files['picture'].save(full_path)
                 picture = os.path.join(rel_path, filename)
                 flash(full_path)
                 flash(picture)
-        
+
         res = update_profile(
             user=curr_user,
             display_name=form.display_name.data,
@@ -187,7 +195,7 @@ def profile():
         form.discord.data = curr_user.discord
         form.picture.data = curr_user.picture
 
-    return render_template('profile.html', form=form)
+    return render_template('user/profile.html', form=form)
 
 
 @app.route("/logout")
@@ -202,11 +210,6 @@ def logout():
         return abort(400)
 
     return redirect(next or url_for('index'))
-
-
-@app.route("/test")
-def test():
-    return render_template('test.html')
 
 
 @app.route("/servers/add", methods=["GET", "POST"])
@@ -224,7 +227,37 @@ def server_add():
             return abort(400)
 
         return redirect(next or url_for('index'))
-    return render_template('server_add.html', form=form)
+    return render_template('server/server_add.html', form=form)
+
+
+@app.route("/servers/edit", methods=["GET", "POST"])
+@login_required
+def server_edit():
+    form = EditServerForm(request.form)
+    if request.method == 'POST' and form.validate_on_submit():
+        servers.edit_server(
+            id=form.id.data,
+            game=form.game.data,
+            name=form.name.data,
+            ip=form.ip.data,
+            description=form.description.data)
+
+        flash('Server edited.')
+
+        next = request.args.get('next')
+        if not is_safe_url(next):
+            return abort(400)
+
+        return redirect(next or url_for('index'))
+    else:
+        server = servers.get_server_by_id(request.args.get("id"))
+        form.id.data = server.sid
+        form.owner.data = server.owner
+        form.game.data = server.game
+        form.name.data = server.name
+        form.ip.data = server.ip
+        form.description.data = server.description
+    return render_template('server/server_edit.html', form=form)
 
 
 @app.route("/register", methods=["GET", "POST"])
@@ -232,7 +265,7 @@ def register():
     form = RegistrationForm(request.form)
     if request.method == 'POST':
         if not form.validate_on_submit():
-            return render_template('register.html', form=form)
+            return render_template('user/register.html', form=form)
 
         user = register_new_user(username=form.username.data,
                                  password=form.password.data,
@@ -249,7 +282,7 @@ def register():
 
         return redirect(next or url_for('index'))
 
-    return render_template('register.html', form=form)
+    return render_template('user/register.html', form=form)
 
 
 @app.route("/login", methods=["GET", "POST"])
@@ -269,7 +302,7 @@ def login():
             return abort(400)
 
         return redirect(next or url_for('index'))
-    return render_template('login.html', form=form)
+    return render_template('user/login.html', form=form)
 
 
 @login_manager.user_loader

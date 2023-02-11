@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block header %}
+    {% block title %}
+        Server List
+    {% endblock title %}
+{% endblock header %}
+{% block content %}
+    <div class="mb-3">
+        Once registered, feel free to <a href={{ url_for('server_add') }}>Add a Server</a>
+    </div>
+    <table class="table table-light table-hover table-striped table-condensed">
+        <thead>
+            <!--th scope="col">#</th-->
+            <th scope="col">Name</th>
+            <th scope="col">Game</th>
+            <th scope="col">Owner</th>
+            <th scope="col">IP</th>
+            <th scope="col">Created</th>
+        </thead>
+        <tbody>
+            {% for server in serverlist %}
+                <tr>
+                    <!--th scope="row">{{ loop.index }}</th-->
+                    <td><a href={{ url_for('server_info', server=server.name) }}>{{ server.name }}</a></td>
+                    <td>{{ server.game }}</td>
+                    <td><a href={{ url_for('user_info', user=server.owner_user.username) }}>{{ server.owner_user.display_name }}</a></td>
+                    <td>{{ server.ip }}</td>
+                    <td>{{ server.createdTime }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock content %}

@@ -5,44 +5,11 @@
 {% block header %}
 {% endblock header %}
 {% block content %}
-    <!-- div class="row">
-        <img style="height:auto;"
-             src="{{ url_for('static', filename=user.get_picture()) }}"
-             class="rounded-circle"
-             height="260"
-             width="260"
-             alt="Profile Picture"/>
-        <h1 class="vcard-names">
-            <span class="p-name vcard-fullname d-block overflow-hidden" itemprop="name">{{ user.display_name }}</span>
-            <span class="p-nickname vcard-username d-block" itemprop="additionalName">{{ user.username }}</span>
-            <span class="p-discord vcard-discord d-block">{{ user.discord }}
-                <button class="btn-clip btn"
-                        onclick="copyText('{{ user.discord }}', 'tooltip1')"
-                        onmouseout="tooltipOutFunc('tooltip1')"
-                        title="Copy to clipboard"
-                        id="tooltip1"
-                        data-bs-toggle="tooltip"
-                        data-bs-placement="top">
-                    <i class="fa-regular fa-copy"></i>
-                </button>
-            </span>
-        </h1>
-        {% if current_user.is_authenticated %}
-            {% if current_user.username == user.username %}
-                <a href="{{ url_for('profile')}}" class="btn btn-secondary">Edit Profile</a>
-            {% else %}
-                <a href="{{ url_for('profile')}}" class="btn btn-secondary">Follow</a>
-            {% endif %}
-        {% endif %}
-    </div -->
     <div class="row">
         <div class="col-lg-4">
             <div class="card mb-4">
                 <div class="card-body text-center">
-                    <img src="{{ url_for('static', filename=user.get_picture()) }}"
-                         alt="avatar"
-                         class="rounded-circle img-fluid"
-                         style="width: 150px;">
+                    <img src="{{ url_for('static', filename=user.get_picture()) }}" height=200px width=200px alt="avatar" class="rounded-circle img-fluid " />
                     <h5 class="my-3">{{ user.display_name }}</h5>
                     <p class="text-muted mb-1">{{ user.username }}</p>
                     <p class="text-muted mb-4">{{ user.email }}</p>
@@ -51,7 +18,7 @@
                             {% if current_user.username == user.username %}
                                 <a href="{{ url_for('profile')}}" class="btn btn-primary">Edit Profile</a>
                             {% else %}
-                                <a href="{{ url_for('profile')}}" class="btn btn-primary">Follow</a>
+                                <button id="follow-btn" class="btn btn-primary" onclick="followUser('NickM')">Follow</button>
                             {% endif %}
                         {% endif %}
                         <!-- button type="button" class="btn btn-primary">Follow</button>
@@ -115,6 +82,9 @@
                             <p class="mb-4" align=center>
                                 {{ server.name }}
                             </p>
+                            <div class="d-flex justify-content-center mb-2">
+                                <a href="{{ url_for('server_edit', id=server.sid)}}" class="btn btn-primary" align=centered>Edit Server</a>
+                            </div>
                             <div class="row">
                                 <div class="col-sm-6">
                                     <p class="mb-0">Game</p>
@@ -165,3 +135,6 @@
         </div>
     </div>
 {% endblock content %}
+{% block javascript %}
+    <script type="text/javascript" src={{ url_for('static', filename='script/profile.js') }}></script>
+{% endblock javascript %}

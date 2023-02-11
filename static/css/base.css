@@ -2,6 +2,19 @@ a {
     text-decoration-line: none;
 }
 
+.dropdown-menu {
+    min-width: 800px !important;
+}
+
+.profile-name {
+    color: black !important;
+    min-width: 800px !important;
+}
+
+.profile-avatar-lg {
+    border: 5px solid #555 !important;
+}
+
 .sub-header {
     font-weight: 300;
 }
