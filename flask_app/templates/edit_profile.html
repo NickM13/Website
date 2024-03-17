@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block header %}
+{% block title %}Edit Profile{% endblock title %}
+{% endblock header %}
+
+{% block content %}
+<form method="post">
+    {{ form.hidden_tag() }}
+    {{ form.username.label(class="form-control-label") }}
+    {{ form.username(class="form-control") }}
+    <br>
+    {{ form.riot_id.label(class="form-control-label") }}
+    {{ with_errors(form.riot_id, class='form-control') }}
+    <br>
+    {{ form.submit(class="btn btn-primary") }}
+</form>
+{% endblock content %}

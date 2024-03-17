@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block header %}
+{% block title %}Champion Scouter{% endblock title %}
+{% endblock header %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <form action="/league/champion/scouter" method="GET" class="d-flex">
+                <select class="form-select search-region" name="region">
+                    <option value="NA1">NA1</option>
+                    <option value="BR1">BR1</option>
+                    <option value="EUN1">EUN1</option>
+                    <option value="EUW1">EUW1</option>
+                    <option value="JP1">JP1</option>
+                    <option value="KR">KR</option>
+                    <option value="LA1">LA1</option>
+                    <option value="LA2">LA2</option>
+                    <option value="OCI">OCI</option>
+                    <option value="PH2">PH2</option>
+                    <option value="RU">RU</option>
+                    <option value="SG2">SG2</option>
+                    <option value="TH2">TH2</option>
+                    <option value="TR1">TR1</option>
+                    <option value="TW2">TW2</option>
+                    <option value="VN2">VN2</option>
+                </select>
+                <input type="text" class="form-control search-summoner" placeholder="Enter summoner name" name="summoner">
+                <button type="submit" class="btn btn-primary search-submit">Search</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% if summoner %}
+<div class="summoner-header">
+    <div class="summoner-icon-container">
+        <img src="{{ url_for('static', filename='dragontail/13.12.1/img/profileicon/'+ summoner.profileIconId|string +'.png') }}"
+         class="rounded-4 summoner-header-icon" height="85" width="85" alt="Profile Icon" loading="lazy"/>
+    </div>
+    <div class="summoner-header-info">
+        <div class="summoner-header-name">{{ summoner.name }}</div>
+    </div>
+</div>
+{% endif %}
+{% endblock content %}

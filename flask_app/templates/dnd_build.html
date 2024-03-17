@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block header %}
+{% block title %}{{ class_name }} Build - Dark and Darker{% endblock title %}
+{% endblock header %}
+
+{% block content %}
+{% if summoner %}
+<div class="summoner-header">
+    <div class="summoner-icon-container">
+    </div>
+    <div class="summoner-header-info">
+        <div class="summoner-header-name">{{ summoner.name }}</div>
+    </div>
+</div>
+{% endif %}
+<div>
+    <img src="{{ url_for('static', filename='dnd/class/rogue/perks/1.png') }}" title="1"/>
+    <img src="{{ url_for('static', filename='dnd/class/rogue/perks/2.png') }}" title="2"/>
+    <img src="{{ url_for('static', filename='dnd/class/rogue/perks/3.png') }}" title="3"/>
+    <img src="{{ url_for('static', filename='dnd/class/rogue/perks/4.png') }}" title="4"/>
+    <img src="{{ url_for('static', filename='dnd/class/rogue/perks/5.png') }}" title="5"/>
+    <img src="{{ url_for('static', filename='dnd/class/rogue/perks/6.png') }}" title="6"/>
+    <img src="{{ url_for('static', filename='dnd/class/rogue/perks/7.png') }}" title="7"/>
+    <img src="{{ url_for('static', filename='dnd/class/rogue/perks/8.png') }}" title="8"/>
+    <img src="{{ url_for('static', filename='dnd/class/rogue/perks/9.png') }}" title="9"/>
+</div>
+{% endblock content %}

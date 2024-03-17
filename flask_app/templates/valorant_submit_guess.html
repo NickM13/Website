@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+
+{% block header %}
+{% block title %}Submit Guesses{% endblock title %}
+{% endblock header %}
+
+{% block content %}
+<form action="" method="post">
+    <div class="d-flex flex-wrap bd-highlight">
+        {% for participant in event.participants %}
+        <!-- div class="container">
+            <div role="group" aria-label="Basic radio toggle button group">
+                {% for rank in possible_ranks %}
+                <div class="row row-cols-sm-3">
+                    {% if rank.is_apex %}
+                        <input type="radio" class="btn-check" name="btnradio" id="{{ rank.id }}_1" autocomplete="off"
+                               checked>
+                        <label class="btn btn-outline-{{ rank.btn_color }}" for="{{ rank.id }}_1">{{ rank.name }}</label>
+                    {% else %}
+                        <input type="radio" class="btn-check" name="btnradio" id="{{ rank.id }}_1" autocomplete="off"
+                               checked>
+                        <label class="btn btn-outline-{{ rank.btn_color }}" for="{{ rank.id }}_1">{{ rank.name }} I</label>
+                        <input type="radio" class="btn-check" name="btnradio" id="{{ rank.id }}_2" autocomplete="off">
+                        <label class="btn btn-outline-{{ rank.btn_color }}" for="{{ rank.id }}_2">{{ rank.name }} II</label>
+                        <input type="radio" class="btn-check" name="btnradio" id="{{ rank.id }}_3" autocomplete="off">
+                        <label class="btn btn-outline-{{ rank.btn_color }}" for="{{ rank.id }}_3">{{ rank.name }} III</label>
+                    {% endif %}
+                </div>
+                {% endfor %}
+            </div>
+        </div -->
+        <div class="card m-3" style="width: 18rem;">
+            <div class="body m-3">
+                <h5 class="card-title">{{ participant.riot_id }}</h5>
+                <p class="card-text"><a
+                        href="https://tracker.gg/valorant/profile/riot/{{ participant.get_riot_id_for_url() }}/overview"
+                        target="_blank">Tracker</a></p>
+                <select class="form-select" name="{{ participant.get_id() }}_rank">
+                    <option value="" disabled selected>Select a rank</option>
+                    {% for rank in possible_ranks %}
+                    {% if rank.is_apex %}
+                    <option value="{{ rank.id }}_1">{{ rank.name }}</option>
+                    {% else %}
+                    <option value="{{ rank.id }}_1">{{ rank.name }} I</option>
+                    <option value="{{ rank.id }}_2">{{ rank.name }} II</option>
+                    <option value="{{ rank.id }}_3">{{ rank.name }} III</option>
+                    {% endif %}
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    <button type="submit" class="btn btn-primary">Submit Guesses</button>
+</form>
+{% endblock content %}

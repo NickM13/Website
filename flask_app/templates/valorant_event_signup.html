@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+
+{% block header %}
+{% block title %}Register Account{% endblock title %}
+{% endblock header %}
+
+{% block content %}
+<form action="" method="post">
+    <p>
+        Choose an event to sign up for:<br>
+        <select name="event_id" class="form-select" aria-label="Event select">
+            {% for event in events %}
+            <option value="{{ event.id }}">{{ event.name }} - Signup ends on {{ event.sign_up_end.strftime('%Y-%m-%d') }}</option>
+            {% endfor %}
+        </select>
+    </p>
+    <button type="submit" class="btn btn-primary">Sign Up</button>
+</form>
+{% endblock content %}

@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+
+{% block header %}
+{% block title %}Match Details{% endblock title %}
+{% endblock header %}
+
+{% block content %}
+{% if match_data %}
+{% for each_category in match_data -%}
+<br>
+    <a data-bs-toggle="collapse" href="#{{ each_category }}" role="button" aria-expanded="false" aria-controls="{{ each_category }}">{{ each_category }}</a>
+    <div class="collapse" id="{{ each_category }}">
+    {% for each_subcategory in match_data[each_category] %}
+        {{ each_subcategory }} {{ match_data[each_category][each_subcategory] }}
+    {% endfor %}
+    </div>
+{% endfor %}
+{% endif %}
+{% endblock content %}

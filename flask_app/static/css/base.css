@@ -1,0 +1,218 @@
+h1, h2, h3, h4, h5, body, p {
+    color: #4F4F4F;
+}
+
+.search-region {
+    border-radius: 0px;
+    border-top-left-radius: 10px;
+    border-bottom-left-radius: 10px;
+    width: 100px;
+}
+
+.search-summoner {
+    border-radius: 0px;
+}
+
+.search-submit {
+    border-radius: 0px;
+    border-top-right-radius: 10px;
+    border-bottom-right-radius: 10px;
+}
+
+.summoner-header {
+    display: flex;
+    flex-direction: row;
+}
+
+.summoner-icon-container {
+
+}
+
+.summoner-header-icon {
+
+}
+
+.summoner-header-info {
+    margin-left: 20px;
+}
+
+.summoner-header-name {
+    font-size: 26px;
+    font-weight: bold;
+    color: #fff;
+}
+
+.match-history-card {
+    margin-bottom: 6px;
+}
+
+.match-history-card-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+    height: 100px;
+    color: #fff
+}
+
+.match-lose {
+    background: linear-gradient(0deg,rgba(255,78,80,.16),rgba(255,78,80,.16)),#191937;
+}
+
+.match-win {
+    background: linear-gradient(0deg,rgba(50,115,250,.2),rgba(50,115,250,.2)),#191937;
+}
+
+.match-win-text {
+    font-weight: bold;
+    color: #55f;
+    margin-right: 6px;
+}
+
+.match-loss-text {
+    font-weight: bold;
+    color: #f33;
+    margin-right: 6px;
+}
+
+.kda {
+
+}
+
+.kda-performance {
+    display: flex;
+    flex-direction: row;
+}
+
+.kda-performance-normal {
+    margin-right: 6px;
+    color: #def;
+    font-weight: bold;
+}
+
+.kda-performance-good {
+    margin-right: 6px;
+    color: #38f;
+    font-weight: bold;
+}
+
+.kda-performance-great {
+    margin-right: 6px;
+    color: #fa0;
+    font-weight: bold;
+}
+
+.group-one {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 10%;
+}
+
+.row-one {
+    display: flex;
+    font-size: 16px;
+}
+
+.row-two {
+    display: flex;
+    font-size: 12px;
+}
+
+.row-three {
+    display: flex;
+    font-size: 14px;
+}
+
+.group-two {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 20%;
+}
+
+.group-three {
+    display: flex;
+    width: 25%;
+}
+
+.team-list {
+    flex: 1 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.summoner-entry {
+    font-size: 10px;
+}
+
+a {
+    text-decoration-line: none;
+}
+
+.dropdown-menu-profile {
+    min-width: 250px !important;
+}
+
+.profile-name {
+    color: black !important;
+}
+
+.profile-avatar-lg {
+    border: 5px solid #555 !important;
+}
+
+.sub-header {
+    font-weight: 300;
+}
+
+.fa-discord {
+    color: #3333FF !important;
+}
+
+.fa-github {
+    color: #333333 !important;
+}
+
+.btn {
+    text-transform: uppercase;
+    text-decoration: none;
+}
+
+.tooltip {
+    position: relative;
+    display: inline-block;
+}
+
+.tooltip .tooltiptext {
+    visibility: hidden;
+    width: 140px;
+    background-color: #555;
+    color: #fff;
+    text-align: center;
+    border-radius: 6px;
+    padding: 5px;
+    position: absolute;
+    z-index: 1;
+    bottom: 150%;
+    left: 50%;
+    margin-left: -75px;
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+.tooltip .tooltiptext::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    margin-left: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: #555 transparent transparent transparent;
+}
+
+.tooltip:hover .tooltiptext {
+    visibility: visible;
+    opacity: 1;
+}

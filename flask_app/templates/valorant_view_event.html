@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+
+{% block header %}
+{% block title %}Viewing Event{% endblock title %}
+{% endblock header %}
+
+{% block content %}
+{% if event.is_signing_up %}
+This event is currently in the Signing Up state.
+<span id="signing_timer"></span>
+<script>countdown('signing_timer', "{{ event.sign_up_end }}");</script>
+{% elif event.is_guessing %}
+This event is currently in the Guessing state.
+<span id="guess_timer"></span>
+<script>countdown('guess_timer', "{{ event.guess_end }}");</script>
+{% elif event.is_ongoing %}
+<table class="table table-bordered table-striped">
+    <thead>
+    <tr>
+        <th>.</th>
+        {% for participant in event.participants %}
+        <th scope="col">{{ participant.get_user().riot_id }}</th>
+        {% endfor %}
+    </tr>
+    </thead>
+    <tbody>
+    {% for participant in event.participants %}
+    <tr>
+        <th scope="row">{{ participant.get_user().riot_id }}</th>
+        {% for participant2 in event.participants %}
+        <td>{{ participant.get_guess(participant2) }}</td>
+        {% endfor %}
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% endif %}
+{% endblock content %}
+{% block javascript %}
+{% endblock javascript %}

@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+
+{% block header %}
+{% block title %}Match Insertion{% endblock title %}
+{% endblock header %}
+
+{% block content %}
+<form method="post">
+    <input type="text" name="match_id" placeholder="Enter Match ID" required>
+    <button type="submit">Submit</button>
+</form>
+{% endblock content %}

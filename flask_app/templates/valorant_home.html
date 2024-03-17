@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+
+{% block header %}
+{% block title %}Valorant Home{% endblock title %}
+{% endblock header %}
+
+{% block content %}
+{% if future_events %}
+<a href="{{ url_for('val.event_signup') }}">There are <b>{{ future_events|length }}</b> events you can sign up for</a>
+{% else %}
+There are no upcoming events!
+{% endif %}
+<br>
+<hr>
+<br>
+<div class="container">
+    <div class="row">
+        <div class="col">
+            {% if events_to_guess|length > 0 %}
+            {% for event in events_to_guess %}
+            <div class="card text-center">
+                <div class="card-header">
+                    Valorant Guessing Game
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title">{{ event.name }}</h5>
+                    <p class="card-text">Guesses will be locked in: <span id="{{ event.id }}"></span></p>
+                    <p class="card-text">Total participants: {{ event.participants|length }}</p>
+                    <a href="{{ url_for('val.submit_guess', event_id=event.id) }}" class="btn btn-primary">Modify
+                        Guesses</a>
+                    <script>
+                        countdown('{{ event.id }}', '{{ event.guess_end }}');
+                    </script>
+                </div>
+                <div class="card-footer text-muted">
+                </div>
+            </div>
+            <br>
+            {% endfor %}
+            {% else %}
+            <li>No events to guess for at the moment.</li>
+            {% endif %}
+        </div>
+        <div class="col">
+            <h5 class="mb-3">Ongoing events</h5>
+            {% if running_events|length > 0 %}
+            {% for event in running_events %}
+            <div class="card text-center">
+                <div class="card-header">
+                    Valorant Guessing Game
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title">{{ event.name }}</h5>
+                    <p class="card-text">{{ event.guess_end.strftime('%Y-%m-%d') }}</p>
+                    <p class="card-text">Total participants: {{ event.participants|length }}</p>
+                    <a href="{{ url_for('val.view_event', event_id=event.id) }}" class="btn btn-primary">View</a>
+                </div>
+                <div class="card-footer text-muted">
+                </div>
+            </div>
+            {% endfor %}
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock content %}

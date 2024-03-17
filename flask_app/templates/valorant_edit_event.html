@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block header %}
+{% block title %}Update Valorant Event{% endblock title %}
+{% endblock header %}
+
+{% block content %}
+<form action="" method="post">
+    {{ form.hidden_tag() }}
+    <p>
+        {{ form.name.label }}<br>
+        {{ form.name(size=32) }}
+    </p>
+    <p>
+        {{ form.sign_up_end.label }}<br>
+        {{ form.sign_up_end(id="datepicker") }}
+    </p>
+    <p>
+        {{ form.guess_end.label }}<br>
+        {{ form.guess_end(id="datepicker") }}
+    </p>
+    <p>
+        {{ form.event_end.label }}<br>
+        {{ form.event_end(id="datepicker") }}
+    </p>
+    <p>{{ form.submit() }}</p>
+</form>
+{% endblock content %}

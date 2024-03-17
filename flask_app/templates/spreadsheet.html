@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Spreadsheet</title>
+</head>
+<body>
+    <h1>Spreadsheet</h1>
+    <form action="/spreadsheet" method="get">
+        <label for="match_id">Match ID:</label>
+        <input type="text" id="match_id" name="match_id" required>
+        <input type="submit" value="Submit">
+    </form>
+    <table>
+        <tr>
+            <th>Summoner</th>
+            <th>Champion</th>
+            <th>Threat</th>
+        </tr>
+        {% for row in data %}
+        <tr>
+            <td>{{ row[0] }}</td>
+            <td>{{ row[1] }}</td>
+            <td>{{ row[2] }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+</body>
+</html>
