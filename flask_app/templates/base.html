@@ -20,17 +20,17 @@
 
     {% macro with_errors(field) %}
     <div class="form_field">
-    {% if field.errors %}
+        {% if field.errors %}
         {% set css_class = 'has_error ' + kwargs.pop('class', '') %}
         {{ field(class=css_class, **kwargs) }}
         {% for error in field.errors %}
         <div class="alert alert-danger" role="alert">{{ error|e }}</div>
         {% endfor %}
-    {% else %}
+        {% else %}
         {{ field(**kwargs) }}
-    {% endif %}
+        {% endif %}
     </div>
-{% endmacro %}
+    {% endmacro %}
 </head>
 
 <body>
@@ -45,12 +45,35 @@
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                     <li class="nav-item">
-                        <a class="nav-link active" aria-current="step" href={{ url_for('home') }}>Home</a>
+                        <a class="nav-link active" aria-current="step" href="{{ url_for('home') }}">Home</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link active" aria-current="step" href={{ url_for('val.home') }}>Valorant</a>
+                        <a class="nav-link active" aria-current="step" href="{{ url_for('val.home') }}">Valorant</a>
                     </li>
                 </ul>
+
+                <form class="d-flex gap-3">
+                    {% if not current_user.is_authenticated %}
+                    <a href="{{ url_for('auth.login') }}" class="btn btn-outline-success">Login</a>
+                    <a href="{{ url_for('auth.register') }}" class="btn btn-outline-success">Register</a>
+                    {% else %}
+                    <div class="dropdown">
+                        <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown"
+                                aria-expanded="false">
+                            {{ current_user.username }}
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li class="dropdown-header">{{ current_user.riot_id }}</li>
+                            <li>
+                                <hr class="dropdown-divider">
+                            </li>
+                            <li><a class="dropdown-item" href="{{ url_for('auth.edit_profile') }}">Profile</a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('auth.logout') }}">Logout</a></li>
+                        </ul>
+                    </div>
+                    {% endif %}
+
+                </form>
             </div>
         </div>
     </nav>

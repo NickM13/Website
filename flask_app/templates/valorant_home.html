@@ -16,7 +16,7 @@ There are no upcoming events!
 <div class="container">
     <div class="row">
         <div class="col">
-            {% if events_to_guess|length > 0 %}
+            <h5 class="mb-3 text-center">Ongoing Events</h5>
             {% for event in events_to_guess %}
             <div class="card text-center">
                 <div class="card-header">
@@ -28,22 +28,12 @@ There are no upcoming events!
                     <p class="card-text">Total participants: {{ event.participants|length }}</p>
                     <a href="{{ url_for('val.submit_guess', event_id=event.id) }}" class="btn btn-primary">Modify
                         Guesses</a>
-                    <script>
-                        countdown('{{ event.id }}', '{{ event.guess_end }}');
-                    </script>
                 </div>
                 <div class="card-footer text-muted">
                 </div>
             </div>
-            <br>
+            <script>countdown('{{ event.id }}', '{{ event.guess_end }}');</script>
             {% endfor %}
-            {% else %}
-            <li>No events to guess for at the moment.</li>
-            {% endif %}
-        </div>
-        <div class="col">
-            <h5 class="mb-3">Ongoing events</h5>
-            {% if running_events|length > 0 %}
             {% for event in running_events %}
             <div class="card text-center">
                 <div class="card-header">
@@ -58,8 +48,8 @@ There are no upcoming events!
                 <div class="card-footer text-muted">
                 </div>
             </div>
+            <script>countdown('{{ event.id }}', '{{ event.guess_end }}');</script>
             {% endfor %}
-            {% endif %}
         </div>
     </div>
 </div>
