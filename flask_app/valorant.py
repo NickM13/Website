@@ -113,13 +113,13 @@ def home():
 	events_to_guess = (ValorantEvent.query
 	                   .filter(~ValorantEvent.is_signing_up)
 	                   .filter(ValorantEvent.is_guessing)
-	                   .filter(ValorantEvent.participants.any(user_id=current_user.id))
+	                   .filter(ValorantEvent.participants.any(user_id=current_user.get_id()))
 	                   .all())
 
 	running_events = (ValorantEvent.query
 	                  .filter(~ValorantEvent.is_guessing)
 	                  .filter(ValorantEvent.is_ongoing)
-	                  .filter(ValorantEvent.participants.any(user_id=current_user.id))
+	                  .filter(ValorantEvent.participants.any(user_id=current_user.get_id()))
 	                  .all())
 
 	return render_template('valorant_home.html', future_events=future_events, events_to_guess=events_to_guess,
