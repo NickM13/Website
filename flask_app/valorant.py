@@ -155,7 +155,7 @@ def event_signup():
 
 	# GET request: display the signup form with the list of events
 	events = ValorantEvent.query.filter(ValorantEvent.sign_up_end > datetime.utcnow()).filter(
-		~ValorantEvent.participants.any(id=current_user.get_id())).all()
+		~ValorantEvent.participants.any(user_id=current_user.get_id())).all()
 	return render_template('valorant_event_signup.html', events=events)
 
 
@@ -236,8 +236,8 @@ def add_event():
 @val.route('/edit_event', methods=['GET', 'POST'])
 @login_required
 def edit_event():
-	# if not current_user.is_admin:
-	#	return redirect(url_for('val.home'))
+	if not current_user.is_admin:
+		return redirect(url_for('val.home'))
 
 	event = ValorantEvent.query.get(request.args.get("event_id"))
 
