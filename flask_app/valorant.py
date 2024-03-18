@@ -145,7 +145,11 @@ def event_signup():
 		# Add the current user to the event's participants
 		# Assuming a many-to-many relationship between users and events
 		if current_user not in event.participants:
-			event.participants.append(current_user)
+			participant = ValorantEventParticipants(
+				user_id=current_user.get_id(),
+				event_id=event_id
+			)
+			event.participants.append(participant)
 			db.session.commit()
 			flash('You have successfully signed up for the event!', 'success')
 		else:
