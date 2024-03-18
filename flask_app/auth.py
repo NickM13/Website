@@ -24,7 +24,7 @@ class User(db.Model, UserMixin):
 	is_admin = db.Column(db.Boolean, default=False)
 
 	def get_riot_id_for_url(self):
-		return self.riot_id.replace("#", "%23")
+		return self.riot_id.replace("#", "%23") if self.riot_id is not None else "None"
 
 
 @auth.route('/register', methods=['GET', 'POST'])
