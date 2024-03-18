@@ -31,11 +31,11 @@
         </div -->
         <div class="card m-3" style="width: 18rem;">
             <div class="body m-3">
-                <h5 class="card-title">{{ participant.riot_id }}</h5>
+                <h5 class="card-title">{{ participant.get_user().riot_id }}</h5>
                 <p class="card-text"><a
-                        href="https://tracker.gg/valorant/profile/riot/{{ participant.get_riot_id_for_url() }}/overview"
+                        href="https://tracker.gg/valorant/profile/riot/{{ participant.get_user().get_riot_id_for_url() }}/overview"
                         target="_blank">Tracker</a></p>
-                <select class="form-select" name="{{ participant.get_id() }}_rank">
+                <select class="form-select" name="{{ participant.get_user().get_id() }}_rank">
                     <option value="" disabled selected>Select a rank</option>
                     {% for rank in possible_ranks %}
                     {% if rank.is_apex %}
