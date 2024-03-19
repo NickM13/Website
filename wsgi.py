@@ -1,6 +1,11 @@
+import sys
+
+sys.stdout = sys.stderr
+sys.path.insert(0, "/home/azureuser/Website")
+
 from flask_app.app import create_app
 
-app = create_app()
+application = create_app()
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    application.run(debug=True)

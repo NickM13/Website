@@ -196,6 +196,8 @@ def submit_guess():
 				participant = (ValorantEventParticipants.query
 				               .filter(ValorantEventParticipants.id == participant_id)
 				               .first())
+				print(participant_id)
+				print(participant)
 				guess = (ValorantGuess.query
 				         .filter(ValorantGuess.event_id == event_id)
 				         .filter(ValorantGuess.target_id == participant.user_id)
