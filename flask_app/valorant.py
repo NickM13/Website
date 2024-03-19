@@ -195,7 +195,6 @@ def submit_guess():
 				tier, division = guess_value.split("_")
 				participant = (ValorantEventParticipants.query
 				               .filter(ValorantEventParticipants.id == participant_id)
-				               .filter(ValorantEvent.id == event_id)
 				               .first())
 				guess = (ValorantGuess.query
 				         .filter(ValorantGuess.event_id == event_id)
