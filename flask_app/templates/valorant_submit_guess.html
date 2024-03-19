@@ -35,7 +35,7 @@
                 <p class="card-text"><a
                         href="https://tracker.gg/valorant/profile/riot/{{ participant.get_user().get_riot_id_for_url() }}/overview"
                         target="_blank">Tracker</a></p>
-                <select class="form-select" name="{{ participant.get_user().get_id() }}_rank">
+                <select class="form-select" name="{{ participant.id }}_rank">
                     <option value="" disabled selected>Select a rank</option>
                     {% for rank in possible_ranks %}
                     {% if rank.is_apex %}
