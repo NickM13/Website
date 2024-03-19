@@ -2,7 +2,7 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash, session
 from flask_login import login_user, UserMixin, login_required, current_user, logout_user
 from flask_wtf import FlaskForm
-from wtforms import StringField, SubmitField, DateTimeField, DateField
+from wtforms import StringField, SubmitField, DateTimeField, DateField, BooleanField
 from werkzeug.security import generate_password_hash, check_password_hash
 from wtforms import validators
 from .app import db, login_manager
@@ -69,9 +69,19 @@ def logout():
 	return redirect(url_for('home'))
 
 
+@auth.route('/users')
+def users():
+	if not current_user.is_admin:
+		flash('No permission')
+		return redirect(url_for('home'))
+	return render_template('users_list.html', users=User.query.all())
+
+
 class EditProfileForm(FlaskForm):
 	username = StringField('Username', render_kw={'readonly': True})
-	riot_id = StringField('Riot ID', validators=[validators.Regexp('^[a-zA-Z0-9._]{3,16}#[0-9a-zA-Z]{3,5}$', message="This is your Riot ID, e.g TheNickMead#NA1")])
+	riot_id = StringField('Riot ID', validators=[validators.Regexp('^[a-zA-Z0-9._]{3,16}#[0-9a-zA-Z]{3,5}$',
+	                                                               message="This is your Riot ID, e.g TheNickMead#NA1")])
+	is_admin = BooleanField('Admin')
 	submit = SubmitField('Update')
 
 
@@ -94,12 +104,15 @@ def edit_profile():
 
 	if form.validate_on_submit():
 		user.riot_id = form.riot_id.data
+		if current_user.is_admin:
+			user.is_admin = form.is_admin.data
 		db.session.commit()
 		flash('Profile updated!', 'success')
 		return redirect(url_for('home'))
 	elif request.method == 'GET':
 		form.username.data = user.username
 		form.riot_id.data = user.riot_id
+		if current_user.is_admin:
+			form.is_admin.data = user.is_admin
 
-	print(form.errors)
 	return render_template('edit_profile.html', title='Edit Profile', form=form)

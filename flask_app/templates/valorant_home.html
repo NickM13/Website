@@ -26,8 +26,9 @@ There are no upcoming events!
                     <h5 class="card-title">{{ event.name }}</h5>
                     <p class="card-text">Guesses will be locked in: <span id="{{ event.id }}"></span></p>
                     <p class="card-text">Total participants: {{ event.participants|length }}</p>
-                    <a href="{{ url_for('val.submit_guess', event_id=event.id) }}" class="btn btn-primary">Modify
+                    <a href="{{ url_for('val.submit_guess', event_id=event.id) }}" class="btn btn-primary btn-sm">Modify
                         Guesses</a>
+                    <a href="{{ url_for('val.edit_event', event_id=event.id) }}" class="btn btn-sm btn-outline-warning">Edit</a>
                 </div>
                 <div class="card-footer text-muted">
                 </div>

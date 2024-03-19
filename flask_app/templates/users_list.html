@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block header %}
+{% block title %}Active Users{% endblock title %}
+{% endblock header %}
+
+{% block content %}
+<table class="table table-striped">
+    <thead>
+    <tr>
+        <th scope="col">#</th>
+        <th scope="col">Username</th>
+        <th scope="col">Riot ID</th>
+        <th scope="col">Admin</th>
+        <th scope="col">Edit Profile</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for user in users %}
+    <tr class="{{ 'table-info' if current_user.get_id() == user.get_id() else '' }}">
+        <th scope="row">{{ user.get_id() }}</th>
+        <td>{{ user.username }}</td>
+        <td>{{ user.riot_id }}</td>
+        <td><input class="form-check-input" type="checkbox" id="flexCheckDisabled" {{ 'checked' if user.is_admin else '' }} disabled></td>
+        <td><a href="{{ url_for('auth.edit_profile', user=user.username) }}" class="btn btn-sm btn-outline-primary">Edit</a></td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% endblock content %}

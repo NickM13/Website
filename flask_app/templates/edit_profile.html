@@ -12,6 +12,11 @@
     <br>
     {{ form.riot_id.label(class="form-control-label") }}
     {{ with_errors(form.riot_id, class='form-control') }}
+    {% if current_user.is_admin %}
+    <br>
+    {{ form.is_admin.label(class="form-check-label") }}
+    {{ with_errors(form.is_admin, class='form-check-label') }}
+    {% endif %}
     <br>
     {{ form.submit(class="btn btn-primary") }}
 </form>
