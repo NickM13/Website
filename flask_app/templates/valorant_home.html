@@ -12,11 +12,33 @@ There are no upcoming events!
 {% endif %}
 <br>
 <hr>
+{% if current_user.is_admin %}
+<a href="{{ url_for('val.add_event') }}" class="btn btn-sm btn-secondary">Create Event</a>
+{% else %}
 <br>
+{% endif %}
 <div class="container">
     <div class="row">
         <div class="col">
             <h5 class="mb-3 text-center">Ongoing Events</h5>
+            {% for event in future_events %}
+            <div class="card text-center">
+                <div class="card-header">
+                    Valorant Guessing Game
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title">{{ event.name }}</h5>
+                    <p class="card-text">Submissions will be locked in: <span id="{{ event.id }}"></span></p>
+                    <p class="card-text">Total participants: {{ event.participants|length }}</p>
+                    {% if current_user.is_admin %}
+                    <a href="{{ url_for('val.edit_event', event_id=event.id) }}" class="btn btn-sm">Edit</a>
+                    {% endif %}
+                </div>
+                <div class="card-footer text-muted">
+                </div>
+            </div>
+            <script>countdown('{{ event.id }}', '{{ event.guess_end }}');</script>
+            {% endfor %}
             {% for event in events_to_guess %}
             <div class="card text-center">
                 <div class="card-header">
@@ -28,7 +50,9 @@ There are no upcoming events!
                     <p class="card-text">Total participants: {{ event.participants|length }}</p>
                     <a href="{{ url_for('val.submit_guess', event_id=event.id) }}" class="btn btn-primary btn-sm">Modify
                         Guesses</a>
-                    <a href="{{ url_for('val.edit_event', event_id=event.id) }}" class="btn btn-sm btn-outline-warning">Edit</a>
+                    {% if current_user.is_admin %}
+                    <a href="{{ url_for('val.edit_event', event_id=event.id) }}" class="btn btn-sm">Edit</a>
+                    {% endif %}
                 </div>
                 <div class="card-footer text-muted">
                 </div>
@@ -45,6 +69,28 @@ There are no upcoming events!
                     <p class="card-text">{{ event.guess_end.strftime('%Y-%m-%d') }}</p>
                     <p class="card-text">Total participants: {{ event.participants|length }}</p>
                     <a href="{{ url_for('val.view_event', event_id=event.id) }}" class="btn btn-primary">View</a>
+                    {% if current_user.is_admin %}
+                    <a href="{{ url_for('val.edit_event', event_id=event.id) }}" class="btn btn-sm">Edit</a>
+                    {% endif %}
+                </div>
+                <div class="card-footer text-muted">
+                </div>
+            </div>
+            <script>countdown('{{ event.id }}', '{{ event.guess_end }}');</script>
+            {% endfor %}
+            {% for event in expired_events %}
+            <div class="card text-center">
+                <div class="card-header">
+                    Valorant Guessing Game
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title">{{ event.name }}</h5>
+                    <p class="card-text">{{ event.guess_end.strftime('%Y-%m-%d') }}</p>
+                    <p class="card-text">Total participants: {{ event.participants|length }}</p>
+                    <a href="{{ url_for('val.view_event', event_id=event.id) }}" class="btn btn-primary">View</a>
+                    {% if current_user.is_admin %}
+                    <a href="{{ url_for('val.edit_event', event_id=event.id) }}" class="btn btn-sm">Edit</a>
+                    {% endif %}
                 </div>
                 <div class="card-footer text-muted">
                 </div>

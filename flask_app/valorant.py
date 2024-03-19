@@ -1,4 +1,5 @@
 from sqlalchemy.ext.hybrid import hybrid_property
+from wtforms.fields.simple import BooleanField
 
 from .app import db
 from datetime import datetime, timedelta
@@ -16,6 +17,7 @@ val = Blueprint('val', __name__)
 class ValorantEvent(db.Model):
 	id = db.Column(db.Integer, primary_key=True)
 	name = db.Column(db.String(100), nullable=False)
+	deleted = db.Column(db.Boolean, default=False)
 	sign_up_end = db.Column(db.DateTime, default=datetime.utcnow)
 	guess_end = db.Column(db.DateTime, default=(datetime.utcnow() + timedelta(days=7)))
 	event_end = db.Column(db.DateTime, default=(datetime.utcnow() + timedelta(days=30)))
@@ -106,30 +108,40 @@ class EditEventForm(FlaskForm):
 	                      validators=[DataRequired()])
 	event_end = DateField('Event End Date', format='%Y-%m-%d',
 	                      validators=[DataRequired()])
+	deleted = BooleanField('Deleted')
 	submit = SubmitField('Update Event')
 
 
 @val.route('/')
 def home():
 	future_events = (ValorantEvent.query
+	                 .filter(~ValorantEvent.deleted)
 	                 .filter(ValorantEvent.is_signing_up)
 	                 .filter(~ValorantEvent.participants.any(user_id=current_user.get_id()))
 	                 .all())
 
 	events_to_guess = (ValorantEvent.query
+	                   .filter(~ValorantEvent.deleted)
 	                   .filter(~ValorantEvent.is_signing_up)
 	                   .filter(ValorantEvent.is_guessing)
 	                   .filter(ValorantEvent.participants.any(user_id=current_user.get_id()))
 	                   .all())
 
 	running_events = (ValorantEvent.query
+	                  .filter(~ValorantEvent.deleted)
 	                  .filter(~ValorantEvent.is_guessing)
 	                  .filter(ValorantEvent.is_ongoing)
 	                  .filter(ValorantEvent.participants.any(user_id=current_user.get_id()))
 	                  .all())
 
+	expired_events = (ValorantEvent.query
+	                  .filter(~ValorantEvent.deleted)
+	                  .filter(~ValorantEvent.is_ongoing)
+	                  .filter(ValorantEvent.participants.any(user_id=current_user.get_id()))
+	                  .all())
+
 	return render_template('valorant_home.html', future_events=future_events, events_to_guess=events_to_guess,
-	                       running_events=running_events)
+	                       running_events=running_events, expired_events=expired_events)
 
 
 @val.route('/signup', methods=['GET', 'POST'])
@@ -230,14 +242,15 @@ def submit_guess():
 	               .filter(ValorantEventParticipants.event_id == event.id)
 	               .first())
 
-	return render_template('valorant_submit_guess.html', participant=participant, event=event, possible_ranks=possible_ranks)
+	return render_template('valorant_submit_guess.html', participant=participant, event=event,
+	                       possible_ranks=possible_ranks)
 
 
 @val.route('/add_event', methods=['GET', 'POST'])
 @login_required
 def add_event():
-	# if not current_user.is_admin:
-	#	return redirect(url_for('val.home'))
+	if not current_user.is_admin:
+		return redirect(url_for('val.home'))
 
 	form = AddEventForm()
 	if form.validate_on_submit():
@@ -273,6 +286,7 @@ def edit_event():
 		event.sign_up_end = form.sign_up_end.data
 		event.guess_end = form.guess_end.data
 		event.event_end = form.event_end.data
+		event.deleted = form.deleted.data
 		db.session.commit()
 		flash('Event updated', 'success')
 		return redirect(url_for('val.home'))
@@ -281,5 +295,6 @@ def edit_event():
 		form.event_end.data = event.event_end
 		form.guess_end.data = event.guess_end
 		form.sign_up_end.data = event.sign_up_end
+		form.deleted.data = event.deleted
 
-	return render_template('valorant_edit_event.html', form=form)
+	return render_template('valorant_edit_event.html', event=event, form=form)

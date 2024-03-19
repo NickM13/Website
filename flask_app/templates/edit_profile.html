@@ -8,7 +8,7 @@
 <form method="post">
     {{ form.hidden_tag() }}
     {{ form.username.label(class="form-control-label") }}
-    {{ form.username(class="form-control") }}
+    {{ form.username(class="form-control-plaintext") }}
     <br>
     {{ form.riot_id.label(class="form-control-label") }}
     {{ with_errors(form.riot_id, class='form-control') }}
