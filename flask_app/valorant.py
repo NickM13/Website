@@ -41,26 +41,26 @@ class ValorantEvent(db.Model):
 
 class ValorantEventParticipants(db.Model):
 	__tablename__ = 'valorant_event_participants'
-	user_id = db.Column(db.Integer, db.ForeignKey('user.id'), primary_key=True)
-	event_id = db.Column(db.Integer, db.ForeignKey('valorant_event.id'), primary_key=True)
-	guesses = db.relationship('ValorantGuess', backref='participant', lazy='dynamic')
+	id = db.Column(db.Integer, primary_key=True)
+	user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+	event_id = db.Column(db.Integer, db.ForeignKey('valorant_event.id'))
+	guesses = db.relationship('ValorantGuess', backref=db.backref('participant'), lazy=True)
 
 	def get_user(self):
 		return User.query.get(self.user_id)
 
-	def get_guess(self, user):
-		guess = (ValorantGuess.query
-		         .filter(ValorantGuess.guesser_id == self.user_id)
-		         .filter(ValorantGuess.event_id == self.event_id)
-		         .filter(ValorantGuess.participant_id == user.user_id)
-		         .first())
-		return guess.get_rank() if guess else "No guess"
+	def get_guess(self, participant):
+		for guess in self.guesses:
+			print(guess.target_id)
+			if guess.target_id == participant.user_id:
+				return guess.get_rank()
+		return "No guess"
 
 
 class ValorantGuess(db.Model):
 	id = db.Column(db.Integer, primary_key=True)
-	guesser_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-	participant_id = db.Column(db.Integer, db.ForeignKey('valorant_event_participants.user_id'), nullable=False)
+	source_id = db.Column(db.Integer, db.ForeignKey('valorant_event_participants.id'))
+	target_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
 	rank_id = db.Column(db.Integer, db.ForeignKey('valorant_tier.id'))
 	division_id = db.Column(db.Integer)
 	event_id = db.Column(db.Integer, db.ForeignKey('valorant_event.id'))
@@ -149,6 +149,7 @@ def event_signup():
 				user_id=current_user.get_id(),
 				event_id=event_id
 			)
+			db.session.add(participant)
 			event.participants.append(participant)
 			db.session.commit()
 			flash('You have successfully signed up for the event!', 'success')
@@ -183,27 +184,35 @@ def submit_guess():
 		           .filter(User.id == current_user.id)
 		           .first())
 
+		if not guesser:
+			flash("Invalid guesser!", 'fatal')
+			return redirect(url_for('val.home'))
+
 		for key in request.form.keys():
 			if "_rank" in key:
 				guess_value = request.form.get(key)
 				participant_id = key.split("_")[0]
 				tier, division = guess_value.split("_")
+				participant = (ValorantEventParticipants.query
+				               .filter(ValorantEventParticipants.id == participant_id)
+				               .filter(ValorantEvent.id == event_id)
+				               .first())
 				guess = (ValorantGuess.query
 				         .filter(ValorantGuess.event_id == event_id)
-				         .filter(ValorantGuess.guesser_id == current_user.id)
+				         .filter(ValorantGuess.target_id == participant.user_id)
 				         .first())
 				if guess:
 					guess.rank_id = int(tier)
 					guess.division_id = int(division)
 				else:
+					print(participant)
 					guess = ValorantGuess(
 						event_id=event.id,
-						guesser_id=guesser.user_id,
-						participant_id=participant_id,
+						target_id=participant.user_id,
 						rank_id=int(tier),
 						division_id=int(division)
 					)
-					guesser.guesses.add(guess)
+					guesser.guesses.append(guess)
 					db.session.add(guess)
 
 		db.session.commit()
