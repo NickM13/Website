@@ -7,7 +7,7 @@
 {% block content %}
 <form action="" method="post">
     <div class="d-flex flex-wrap bd-highlight">
-        {% for participant in event.participants %}
+        {% for p in event.participants %}
         <!-- div class="container">
             <div role="group" aria-label="Basic radio toggle button group">
                 {% for rank in possible_ranks %}
@@ -31,19 +31,19 @@
         </div -->
         <div class="card m-3" style="width: 18rem;">
             <div class="body m-3">
-                <h5 class="card-title">{{ participant.get_user().riot_id }}</h5>
+                <h5 class="card-title">{{ p.get_user().riot_id }}</h5>
                 <p class="card-text"><a
-                        href="https://tracker.gg/valorant/profile/riot/{{ participant.get_user().get_riot_id_for_url() }}/overview"
+                        href="https://tracker.gg/valorant/profile/riot/{{ p.get_user().get_riot_id_for_url() }}/overview"
                         target="_blank">Tracker</a></p>
-                <select class="form-select" name="{{ participant.id }}_rank">
+                <select class="form-select" name="{{ p.id }}_rank">
                     <option value="" disabled selected>Select a rank</option>
                     {% for rank in possible_ranks %}
                     {% if rank.is_apex %}
-                    <option value="{{ rank.id }}_1">{{ rank.name }}</option>
+                    <option value="{{ rank.id }}_1" {{ 'selected' if (participant.get_guess_id(p) == (rank.id|string) + "_1") else '' }}>{{ rank.name }}</option>
                     {% else %}
-                    <option value="{{ rank.id }}_1">{{ rank.name }} I</option>
-                    <option value="{{ rank.id }}_2">{{ rank.name }} II</option>
-                    <option value="{{ rank.id }}_3">{{ rank.name }} III</option>
+                    <option value="{{ rank.id }}_1" {{ 'selected' if (participant.get_guess_id(p) == (rank.id|string) + "_1") else '' }}>{{ rank.name }} I</option>
+                    <option value="{{ rank.id }}_2" {{ 'selected' if (participant.get_guess_id(p) == (rank.id|string) + "_2") else '' }}>{{ rank.name }} II</option>
+                    <option value="{{ rank.id }}_3" {{ 'selected' if (participant.get_guess_id(p) == (rank.id|string) + "_3") else '' }}>{{ rank.name }} III</option>
                     {% endif %}
                     {% endfor %}
                 </select>

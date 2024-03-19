@@ -49,6 +49,12 @@ class ValorantEventParticipants(db.Model):
 	def get_user(self):
 		return User.query.get(self.user_id)
 
+	def get_guess_id(self, participant):
+		for guess in self.guesses:
+			if guess.target_id == participant.user_id:
+				return str(guess.rank_id) + "_" + str(guess.division_id)
+		return "None"
+
 	def get_guess(self, participant):
 		for guess in self.guesses:
 			print(guess.target_id)
@@ -196,8 +202,6 @@ def submit_guess():
 				participant = (ValorantEventParticipants.query
 				               .filter(ValorantEventParticipants.id == participant_id)
 				               .first())
-				print(participant_id)
-				print(participant)
 				guess = (ValorantGuess.query
 				         .filter(ValorantGuess.event_id == event_id)
 				         .filter(ValorantGuess.target_id == participant.user_id)
@@ -206,7 +210,6 @@ def submit_guess():
 					guess.rank_id = int(tier)
 					guess.division_id = int(division)
 				else:
-					print(participant)
 					guess = ValorantGuess(
 						event_id=event.id,
 						target_id=participant.user_id,
@@ -222,7 +225,12 @@ def submit_guess():
 
 	possible_ranks = ValorantTier.query.order_by(ValorantTier.order).all()
 
-	return render_template('valorant_submit_guess.html', event=event, possible_ranks=possible_ranks)
+	participant = (ValorantEventParticipants.query
+	               .filter(ValorantEventParticipants.user_id == current_user.get_id())
+	               .filter(ValorantEventParticipants.event_id == event.id)
+	               .first())
+
+	return render_template('valorant_submit_guess.html', participant=participant, event=event, possible_ranks=possible_ranks)
 
 
 @val.route('/add_event', methods=['GET', 'POST'])
