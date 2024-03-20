@@ -24,6 +24,35 @@ class ValorantEvent(db.Model):
 	participants = db.relationship('ValorantEventParticipants',
 	                               backref=db.backref('valorant_events', lazy=True))
 
+	def get_state_id(self):
+		if datetime.utcnow() < self.sign_up_end:
+			return 1
+		if datetime.utcnow() < self.guess_end:
+			return 2
+		if datetime.utcnow() < self.event_end:
+			return 3
+		return 4
+
+	def get_state(self):
+		if datetime.utcnow() < self.sign_up_end:
+			return "Sign-up"
+		if datetime.utcnow() < self.guess_end:
+			return "Guessing"
+		if datetime.utcnow() < self.event_end:
+			return "Ongoing"
+		return "Finished"
+
+	def get_next_state_countdown(self):
+		state_id = self.get_state_id()
+		if state_id == 1:
+			return self.sign_up_end
+		if state_id == 2:
+			return self.guess_end
+		if state_id == 3:
+			return self.event_end
+		if state_id == 4:
+			return None
+
 	@hybrid_property
 	def is_signing_up(self):
 		return datetime.utcnow() < self.sign_up_end
@@ -46,12 +75,13 @@ class ValorantEventParticipants(db.Model):
 	id = db.Column(db.Integer, primary_key=True)
 	user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
 	event_id = db.Column(db.Integer, db.ForeignKey('valorant_event.id'))
-	guesses = db.relationship('ValorantGuess', backref=db.backref('participant'), lazy=True)
+	guesses = db.relationship('ValorantGuess', backref=db.backref('source'), lazy=True)
 
 	def get_user(self):
 		return User.query.get(self.user_id)
 
 	def get_guess_id(self, participant):
+
 		for guess in self.guesses:
 			if guess.target_id == participant.user_id:
 				return str(guess.rank_id) + "_" + str(guess.division_id)
@@ -140,13 +170,36 @@ def home():
 	                  .filter(ValorantEvent.participants.any(user_id=current_user.get_id()))
 	                  .all())
 
+	all_events = (ValorantEvent.query.all())
+
 	return render_template('valorant_home.html', future_events=future_events, events_to_guess=events_to_guess,
-	                       running_events=running_events, expired_events=expired_events)
+	                       running_events=running_events, expired_events=expired_events, all_events=all_events)
+
+
+def add_participant(event, user):
+	if not any(user.id == p.user_id for p in event.participants):
+		participant = ValorantEventParticipants(
+			user_id=user.get_id(),
+			event_id=event.id
+		)
+		db.session.add(participant)
+		event.participants.append(participant)
+		db.session.commit()
+		flash('You have successfully signed up for the event!', 'success')
+		return True
+	flash('You are already signed up for this event.', 'info')
+	return False
 
 
 @val.route('/signup', methods=['GET', 'POST'])
 @login_required
 def event_signup():
+	event_id = request.args.get("event_id")
+	if event_id:
+		event = ValorantEvent.query.filter_by(id=event_id).first()
+		add_participant(event, current_user)
+		return redirect(url_for('val.home'))
+
 	if request.method == 'POST':
 		event_id = request.form.get('event_id')
 		event = ValorantEvent.query.filter_by(id=event_id).first()
@@ -162,19 +215,9 @@ def event_signup():
 
 		# Add the current user to the event's participants
 		# Assuming a many-to-many relationship between users and events
-		if current_user not in event.participants:
-			participant = ValorantEventParticipants(
-				user_id=current_user.get_id(),
-				event_id=event_id
-			)
-			db.session.add(participant)
-			event.participants.append(participant)
-			db.session.commit()
-			flash('You have successfully signed up for the event!', 'success')
-		else:
-			flash('You are already signed up for this event.', 'info')
+		add_participant(event, current_user)
 
-		return redirect(url_for('val.home'))  # Redirect to the homepage or dashboard
+		return redirect(url_for('val.home'))
 
 	# GET request: display the signup form with the list of events
 	events = ValorantEvent.query.filter(ValorantEvent.sign_up_end > datetime.utcnow()).filter(
@@ -200,6 +243,7 @@ def submit_guess():
 		           .join(User)
 		           .join(ValorantEvent)
 		           .filter(User.id == current_user.id)
+		           .filter(ValorantEventParticipants.event_id == event_id)
 		           .first())
 
 		if not guesser:
@@ -233,7 +277,7 @@ def submit_guess():
 
 		db.session.commit()
 		flash('Guesses submitted!')
-		return redirect(url_for('home'))
+		return redirect(url_for('val.home'))
 
 	possible_ranks = ValorantTier.query.order_by(ValorantTier.order).all()
 

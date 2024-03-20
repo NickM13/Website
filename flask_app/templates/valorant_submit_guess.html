@@ -12,19 +12,28 @@
             <div role="group" aria-label="Basic radio toggle button group">
                 {% for rank in possible_ranks %}
                 <div class="row row-cols-sm-3">
-                    {% if rank.is_apex %}
-                        <input type="radio" class="btn-check" name="btnradio" id="{{ rank.id }}_1" autocomplete="off"
-                               checked>
-                        <label class="btn btn-outline-{{ rank.btn_color }}" for="{{ rank.id }}_1">{{ rank.name }}</label>
-                    {% else %}
-                        <input type="radio" class="btn-check" name="btnradio" id="{{ rank.id }}_1" autocomplete="off"
-                               checked>
-                        <label class="btn btn-outline-{{ rank.btn_color }}" for="{{ rank.id }}_1">{{ rank.name }} I</label>
-                        <input type="radio" class="btn-check" name="btnradio" id="{{ rank.id }}_2" autocomplete="off">
-                        <label class="btn btn-outline-{{ rank.btn_color }}" for="{{ rank.id }}_2">{{ rank.name }} II</label>
-                        <input type="radio" class="btn-check" name="btnradio" id="{{ rank.id }}_3" autocomplete="off">
-                        <label class="btn btn-outline-{{ rank.btn_color }}" for="{{ rank.id }}_3">{{ rank.name }} III</label>
-                    {% endif %}
+                    <div class="tier">
+                        <h3>{{ rank.name }}</h3>
+                        {% if rank.is_apex %}
+                        <label class="ranks">.
+                            <input type="radio" name="radio" id="{{ rank.id }}_1" checked="checked">
+                            <div class="checkmark">{{ rank.name }}</div>
+                        </label>
+                        {% else %}
+                        <label class="ranks">
+                            <input type="radio" name="radio" id="{{ rank.id }}_1">
+                            <div class="checkmark">{{ rank.name }} I</div>
+                        </label>
+                        <label class="ranks">
+                            <input type="radio" name="radio" id="{{ rank.id }}_2">
+                            <div class="checkmark">{{ rank.name }} II</div>
+                        </label>
+                        <label class="ranks">
+                            <input type="radio" name="radio" id="{{ rank.id }}_3">
+                            <div class="checkmark">{{ rank.name }} III</div>
+                        </label>
+                        {% endif %}
+                    </div>
                 </div>
                 {% endfor %}
             </div>
@@ -39,11 +48,19 @@
                     <option value="" disabled selected>Select a rank</option>
                     {% for rank in possible_ranks %}
                     {% if rank.is_apex %}
-                    <option value="{{ rank.id }}_1" {{ 'selected' if (participant.get_guess_id(p) == (rank.id|string) + "_1") else '' }}>{{ rank.name }}</option>
+                    <option value="{{ rank.id }}_1" {{
+                    'selected' if (participant.get_guess_id(p) == (rank.id|string) + "_1") else '' }}>{{ rank.name
+                    }}</option>
                     {% else %}
-                    <option value="{{ rank.id }}_1" {{ 'selected' if (participant.get_guess_id(p) == (rank.id|string) + "_1") else '' }}>{{ rank.name }} I</option>
-                    <option value="{{ rank.id }}_2" {{ 'selected' if (participant.get_guess_id(p) == (rank.id|string) + "_2") else '' }}>{{ rank.name }} II</option>
-                    <option value="{{ rank.id }}_3" {{ 'selected' if (participant.get_guess_id(p) == (rank.id|string) + "_3") else '' }}>{{ rank.name }} III</option>
+                    <option value="{{ rank.id }}_1" {{
+                    'selected' if (participant.get_guess_id(p) == (rank.id|string) + "_1") else '' }}>{{ rank.name }}
+                    I</option>
+                    <option value="{{ rank.id }}_2" {{
+                    'selected' if (participant.get_guess_id(p) == (rank.id|string) + "_2") else '' }}>{{ rank.name }}
+                    II</option>
+                    <option value="{{ rank.id }}_3" {{
+                    'selected' if (participant.get_guess_id(p) == (rank.id|string) + "_3") else '' }}>{{ rank.name }}
+                    III</option>
                     {% endif %}
                     {% endfor %}
                 </select>
