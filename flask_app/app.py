@@ -2,7 +2,7 @@ from flask import Flask, session, redirect, url_for, render_template
 from flask_bcrypt import Bcrypt
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import MetaData
-from riotwatcher import LolWatcher
+from riotwatcher import LolWatcher, RiotWatcher
 from flask_login import LoginManager
 from flask_migrate import Migrate
 
@@ -26,12 +26,18 @@ login_manager = LoginManager()
 db = SQLAlchemy(app, metadata=metadata)
 bcrypt = Bcrypt()
 lol_watcher = LolWatcher('RGAPI-828f8f23-348e-40ee-b84e-8be50c56070f')
+riot_watcher = RiotWatcher('RGAPI-828f8f23-348e-40ee-b84e-8be50c56070f')
 
-from .models import Summoner, ChampionMastery, Match, MatchInfo, MatchMetadata
 from .valorant import ValorantGuess, ValorantEvent, ValorantEventParticipants
+from .league import Summoner, ChampionMastery, Match, MatchInfo, MatchMetadata
 from .auth import User
 
 migrate = Migrate(app, db, render_as_batch=True)
+
+
+@app.context_processor
+def inject_league_version():
+	return dict(league_version="14.6.1")
 
 
 @app.route('/')
@@ -47,9 +53,13 @@ def create_app():
 	from .views import main
 	from .auth import auth
 	from .valorant import val
+	from .league import league
+	from .minecraft import minecraft
 
 	# flask_app.register_blueprint(main)
 	app.register_blueprint(auth, url_prefix='/')
 	app.register_blueprint(val, url_prefix='/val')
+	app.register_blueprint(league, url_prefix='/league')
+	app.register_blueprint(minecraft, url_prefix='/minecraft')
 
 	return app
