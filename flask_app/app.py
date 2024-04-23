@@ -50,7 +50,6 @@ def create_app():
 	login_manager.init_app(app)
 	login_manager.login_view = 'auth.login'
 
-	from .views import main
 	from .auth import auth
 	from .valorant import val
 	from .league import league
