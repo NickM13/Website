@@ -1,0 +1,140 @@
+{% extends "base.html" %}
+
+{% block header %}
+{% block title %}Valorant Home{% endblock title %}
+{% endblock header %}
+
+{% block content %}
+{% if future_events %}
+<a href="{{ url_for('val.event_signup') }}">There are <b>{{ future_events|length }}</b> events you can sign up for</a>
+{% else %}
+There are no upcoming events!
+{% endif %}
+<br>
+<hr>
+<br>
+<div class="container">
+    <div class="row">
+        <div class="col">
+            <h5 class="mb-3 text-center">Ongoing Events</h5>
+            {% for event in future_events %}
+            <div class="card text-center">
+                <div class="card-header">
+                    Valorant Guessing Game
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title">{{ event.name }}</h5>
+                    <p class="card-text">Submissions will be locked in: <span id="{{ event.id }}"></span></p>
+                    <p class="card-text">Total participants: {{ event.participants|length }}</p>
+                    {% if current_user.is_admin %}
+                    <a href="{{ url_for('val.edit_event', event_id=event.id) }}" class="btn btn-sm">Edit</a>
+                    {% endif %}
+                </div>
+                <div class="card-footer text-muted">
+                </div>
+            </div>
+            <script>countdown('{{ event.id }}', '{{ event.guess_end }}');</script>
+            {% endfor %}
+            {% for event in events_to_guess %}
+            <div class="card text-center">
+                <div class="card-header">
+                    Valorant Guessing Game
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title">{{ event.name }}</h5>
+                    <p class="card-text">Guesses will be locked in: <span id="{{ event.id }}"></span></p>
+                    <p class="card-text">Total participants: {{ event.participants|length }}</p>
+                    <a href="{{ url_for('val.submit_guess', event_id=event.id) }}" class="btn btn-primary btn-sm">Modify
+                        Guesses</a>
+                    {% if current_user.is_admin %}
+                    <a href="{{ url_for('val.edit_event', event_id=event.id) }}" class="btn btn-sm">Edit</a>
+                    {% endif %}
+                </div>
+                <div class="card-footer text-muted">
+                </div>
+            </div>
+            <script>countdown('{{ event.id }}', '{{ event.guess_end }}');</script>
+            {% endfor %}
+            {% for event in running_events %}
+            <div class="card text-center">
+                <div class="card-header">
+                    Valorant Guessing Game
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title">{{ event.name }}</h5>
+                    <p class="card-text">{{ event.guess_end.strftime('%Y-%m-%d') }}</p>
+                    <p class="card-text">Total participants: {{ event.participants|length }}</p>
+                    <a href="{{ url_for('val.view_event', event_id=event.id) }}" class="btn btn-primary">View</a>
+                    {% if current_user.is_admin %}
+                    <a href="{{ url_for('val.edit_event', event_id=event.id) }}" class="btn btn-sm">Edit</a>
+                    {% endif %}
+                </div>
+                <div class="card-footer text-muted">
+                </div>
+            </div>
+            <script>countdown('{{ event.id }}', '{{ event.guess_end }}');</script>
+            {% endfor %}
+            {% for event in expired_events %}
+            <div class="card text-center">
+                <div class="card-header">
+                    Valorant Guessing Game
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title">{{ event.name }}</h5>
+                    <p class="card-text">{{ event.guess_end.strftime('%Y-%m-%d') }}</p>
+                    <p class="card-text">Total participants: {{ event.participants|length }}</p>
+                    <a href="{{ url_for('val.view_event', event_id=event.id) }}" class="btn btn-primary">View</a>
+                    {% if current_user.is_admin %}
+                    <a href="{{ url_for('val.edit_event', event_id=event.id) }}" class="btn btn-sm">Edit</a>
+                    {% endif %}
+                </div>
+                <div class="card-footer text-muted">
+                </div>
+            </div>
+            <script>countdown('{{ event.id }}', '{{ event.guess_end }}');</script>
+            {% endfor %}
+        </div>
+    </div>
+{% if current_user.is_admin %}
+<br>
+<p align="center"><b>ADMIN VIEW</b></p>
+<a href="{{ url_for('val.add_event') }}" class="btn btn-sm btn-secondary">Create Event</a>
+<br>
+<table class="table">
+    <thead>
+    <tr>
+    <th scope="col">#</th>
+    <th scope="col">State</th>
+    <th scope="col">NextState</th>
+    <th scope="col">Name</th>
+    <th scope="col">Participants</th>
+    <th scope="col">Submit Date</th>
+    <th scope="col">Guess Date</th>
+    <th scope="col">End Date</th>
+    <th scope="col"></th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for event in all_events %}
+    <tr>
+        <th scope="row">{{ event.id }}</th>
+        <td>{{ event.get_state() }}</td>
+        <td>
+        <span id="timer_{{ event.id }}"></span>
+        <script>countdown('timer_{{ event.id }}', "{{ event.get_next_state_countdown() }}");</script>
+        </td>
+        <td>{{ event.name }}</td>
+        <td>{{ event.participants|length }}</td>
+        <td>{{ event.sign_up_end.strftime('%Y-%m-%d') }}</td>
+        <td>{{ event.guess_end.strftime('%Y-%m-%d') }}</td>
+        <td>{{ event.event_end.strftime('%Y-%m-%d') }}</td>
+        <td>{% if event.get_state_id() == 1 %}<a href="{{ url_for('val.event_signup', event_id=event.id) }}" class="btn btn-sm btn-outline-primary">Join</a>{% endif %}
+            <a href="{{ url_for('val.view_event', event_id=event.id) }}" class="btn btn-sm btn-outline-primary">View</a>
+            <a href="{{ url_for('val.edit_event', event_id=event.id) }}" class="btn btn-sm btn-outline-primary">Edit</a></td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% endif %}
+</div>
+{% endblock content %}
