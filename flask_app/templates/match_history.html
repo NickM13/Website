@@ -4,17 +4,38 @@
 {% block title %}Match History - {{ summoner.name }}{% endblock title %}
 {% endblock header %}
 
+{% block javascript %}
+
+        <script>
+$(document).ready(function() {
+    $("#update-summoner-btn").click(function() {
+        $.ajax({
+            type: "POST",
+            url: "{{ url_for('league.summoner_update', summoner_puuid=summoner.puuid, region=summoner.region) }}",
+            success: function(response) {
+
+            },
+            error: function() {
+                alert("Error occurred");
+            }
+        });
+    });
+});
+        </script>
+{% endblock javascript %}
+
 {% block content %}
 <div class="summoner-header">
     <div class="summoner-icon-container">
-        <img src="{{ url_for('static', filename='dragontail/13.12.1/img/profileicon/'+ summoner.profileIconId|string +'.png') }}"
-         class="rounded-4 summoner-header-icon" height="85" width="85" alt="Profile Icon" loading="lazy"/>
+        <img src="{{ url_for('static', filename='dragontail/' + league_version + '/img/profileicon/' + summoner.profileIconId|string +'.png') }}"
+             class="rounded-4 summoner-header-icon" height="85" width="85" alt="Profile Icon" loading="lazy"/>
     </div>
     <div class="summoner-header-info">
         <div class="summoner-header-name">{{ summoner.name }}</div>
+        <button class="btn btn-primary" id="update-summoner-btn">Update</button>
     </div>
 </div>
-<br />
+<br/>
 {% for match in matches %}
 {% set main = match.get_participant(summoner) %}
 <div class="match-history-card">
@@ -37,7 +58,8 @@
         <div class="group-two">
             <div>{{ main.kills }} / {{ main.deaths }} / {{ main.assists }}</div>
             <div class="kda-performance">
-                <div class="kda-performance-{{ main.get_kda_performance() }}">{{ main.get_kda() }}</div> KDA
+                <div class="kda-performance-{{ main.get_kda_performance() }}">{{ main.get_kda() }}</div>
+                KDA
             </div>
         </div>
         <div class="group-three">
@@ -45,7 +67,7 @@
             <div class="team-list">
                 {% for participant in team %}
                 <div class="summoner-entry">
-                    <img src="{{ url_for('static', filename='dragontail/13.12.1/img/champion/'+ participant.championName|string +'.png') }}"
+                    <img src="{{ url_for('static', filename='dragontail/' + league_version + '/img/champion/' + participant.championName|string +'.png') }}"
                          class="rounded-4"
                          height="18" width="18" alt="Profile Icon" loading="lazy"/>
                     {{ participant.summonerName }}

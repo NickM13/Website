@@ -166,3 +166,4 @@ cython_debug/
 #.idea/
 
 static/uploads/*
+flask_app/static/dragontail/*

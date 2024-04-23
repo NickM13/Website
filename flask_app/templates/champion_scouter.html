@@ -34,9 +34,9 @@
     </div>
 </div>
 {% if summoner %}
-<div class="summoner-header">
+<div class="bg-dark">
     <div class="summoner-icon-container">
-        <img src="{{ url_for('static', filename='dragontail/13.12.1/img/profileicon/'+ summoner.profileIconId|string +'.png') }}"
+        <img src="{{ url_for('static', filename='dragontail/' + league_version + '/img/profileicon/'+ summoner.profileIconId|string +'.png') }}"
          class="rounded-4 summoner-header-icon" height="85" width="85" alt="Profile Icon" loading="lazy"/>
     </div>
     <div class="summoner-header-info">
