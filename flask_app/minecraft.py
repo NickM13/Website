@@ -13,6 +13,7 @@ import datetime
 import math
 from .app import lol_watcher
 from .auth import User
+import io
 
 minecraft = Blueprint('minecraft', __name__)
 log_filename = "/home/azureuser/Server/ATM9/Server-Files-0.1.13/logs/latest.log"
@@ -20,6 +21,6 @@ log_filename = "/home/azureuser/Server/ATM9/Server-Files-0.1.13/logs/latest.log"
 
 @minecraft.route('/logs')
 def logs():
-	with open(log_filename, 'r') as f:
+	with io.open(log_filename, mode='r', encoding="utf-8") as f:
 		text = f.read()
-		return render_template('minecraft_logs.html', text=text, encoding="utf-8")
+		return render_template('minecraft_logs.html', text=text)
