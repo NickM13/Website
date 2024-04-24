@@ -22,4 +22,4 @@ log_filename = "/home/azureuser/Server/ATM9/Server-Files-0.1.13/logs/latest.log"
 def logs():
 	with open(log_filename, 'r') as f:
 		text = f.read()
-		return render_template('minecraft_logs.html', text=text)
+		return render_template('minecraft_logs.html', text=text, encoding="utf-8")
