@@ -13,7 +13,6 @@ import datetime
 import math
 from .app import lol_watcher
 from .auth import User
-from os import open, read
 
 minecraft = Blueprint('minecraft', __name__)
 log_filename = "/home/azureuser/Server/ATM9/Server-Files-0.1.13/logs/latest.log"
