@@ -19,12 +19,15 @@ import os
 minecraft = Blueprint('minecraft', __name__)
 log_filename = "~/LiveServer/logs/latest.log"
 
-
 os.getenv("MC_LOGS")
 
 
 @minecraft.route('/logs')
 def logs():
-	with io.open(log_filename, mode='r', encoding="utf-8") as f:
-		text = f.read()
-		return render_template('minecraft_logs.html', text=text)
+	try:
+		with io.open(log_filename, mode='r', encoding="utf-8") as f:
+			text = f.read()
+			return render_template('minecraft_logs.html', text=text)
+	except:
+		flash(f"No logs found: {log_filename}", 'danger')
+		return redirect(url_for('home'))
