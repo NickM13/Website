@@ -6,8 +6,10 @@ from riotwatcher import LolWatcher, RiotWatcher
 from flask_login import LoginManager
 from flask_migrate import Migrate
 
+import os
+
 app = Flask(__name__)
-app.secret_key = 'secret-key_nmead5'  # Needed for session management
+app.secret_key = os.environ['FLASK_SECRET']
 app.config['UPLOAD_FOLDER'] = './uploads'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users.sqlite'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
@@ -22,11 +24,11 @@ convention = {
 
 metadata = MetaData(naming_convention=convention)
 
-login_manager = LoginManager()
 db = SQLAlchemy(app, metadata=metadata)
 bcrypt = Bcrypt()
-lol_watcher = LolWatcher('RGAPI-828f8f23-348e-40ee-b84e-8be50c56070f')
-riot_watcher = RiotWatcher('RGAPI-828f8f23-348e-40ee-b84e-8be50c56070f')
+lol_watcher = LolWatcher(os.environ['RIOT_API_KEY'])
+riot_watcher = RiotWatcher(os.environ['RIOT_API_KEY'])
+login_manager = LoginManager()
 
 from .valorant import ValorantGuess, ValorantEvent, ValorantEventParticipants
 from .league import Summoner, ChampionMastery, Match, MatchInfo, MatchMetadata

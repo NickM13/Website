@@ -14,9 +14,13 @@ import math
 from .app import lol_watcher
 from .auth import User
 import io
+import os
 
 minecraft = Blueprint('minecraft', __name__)
-log_filename = "/home/azureuser/Server/ATM9/Server-Files-0.1.13/logs/latest.log"
+log_filename = "~/LiveServer/logs/latest.log"
+
+
+os.getenv("MC_LOGS")
 
 
 @minecraft.route('/logs')

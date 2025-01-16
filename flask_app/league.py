@@ -665,7 +665,6 @@ def champ_scouter():
 
 		if summoner:
 			champions = insert_champion_masteries(summoner)
-			print(champions)
 			return render_template('champion_scouter.html', summoner=summoner, champions=champions)
 
 	return render_template('champion_scouter.html')
