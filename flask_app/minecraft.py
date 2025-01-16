@@ -19,8 +19,6 @@ import os
 minecraft = Blueprint('minecraft', __name__)
 log_filename = "~/LiveServer/logs/latest.log"
 
-os.getenv("MC_LOGS")
-
 
 @minecraft.route('/logs')
 def logs():

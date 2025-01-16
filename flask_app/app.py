@@ -57,6 +57,9 @@ def create_app():
 	from .league import league
 	from .minecraft import minecraft
 
+	with app.app_context():
+		db.create_all()
+
 	# flask_app.register_blueprint(main)
 	app.register_blueprint(auth, url_prefix='/')
 	app.register_blueprint(val, url_prefix='/val')
